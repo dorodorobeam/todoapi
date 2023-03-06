@@ -11,6 +11,6 @@ namespace Todo.Application.CQRS.Todo.Models
         public TodoStatusType Status { get; set; }
         public DateTime? Deadline { get; set; }
         public DateTime? DateCompleted { get; set; }
-        public UserModel User { get; set; }
+        public int UserId { get; set; }
     }
 }

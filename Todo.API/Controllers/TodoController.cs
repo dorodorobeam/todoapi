@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Todo.Application.CQRS.Todo.Models;
+using Todo.Domain.Entities;
 using Todo.Persistence.Context;
 
 namespace Todo.API.Controllers
@@ -10,56 +12,63 @@ namespace Todo.API.Controllers
     public class TodoController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private readonly IMapper _mapper;
 
-        public TodoController(DatabaseContext context)
+        public TodoController(DatabaseContext context, IMapper mapper)
         {
             _context = context;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<List<TodoModel>>> Get()
-        {
-            return Ok(await _context.TodoList.ToListAsync());
+            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoModel>> Get(int id)
+        public async Task<ActionResult<List<TodoModel>>> GetUserTodo(int id)
         {
-            var todo = await _context.TodoList.FindAsync(id);
-            if (todo == null)
-                return BadRequest("Todo not found.");
-            return Ok(new TodoModel
-            {
-                
-            });
+            return Ok(await _context.TodoList
+                                    .Include(x => x.User)
+                                    .Where(x => x.User.Id == id)
+                                    .Select(x => _mapper.Map<TodoModel>(x))
+                                    .ToListAsync());
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<TodoModel>>> Addtodo(TodoModel todo)
+        public async Task<ActionResult<bool>> Addtodo(TodoModel todo)
         {
-            _context.TodoList.Add(new Domain.Entities.TodoList
-            {
-               
-            });
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == todo.UserId);
+            if (user == null)
+                return BadRequest("User not found!");
+
+            var data = _mapper.Map<TodoList>(todo);
+            data.User = user;
+            _context.TodoList.Add(data);
             await _context.SaveChangesAsync();
 
-            return Ok(await _context.TodoList.ToListAsync());
+            return Ok(true);
         }
 
         [HttpPut]
-        public async Task<ActionResult<List<TodoModel>>> Updatetodo(TodoModel request)
+        public async Task<ActionResult<bool>> Updatetodo(TodoModel request)
         {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == request.UserId);
+            if (user == null)
+                return BadRequest("User not found!");
+
             var dbtodo = await _context.TodoList.FindAsync(request.Id);
             if (dbtodo == null)
                 return BadRequest("todo not found.");
 
+            dbtodo.Title = request.Title;
+            dbtodo.Remarks = request.Remarks;
+            dbtodo.Status = request.Status;
+            dbtodo.Deadline = request.Deadline;
+            dbtodo.DateCompleted = request.DateCompleted.HasValue ? request.DateCompleted : null;
+
             await _context.SaveChangesAsync();
 
-            return Ok(await _context.TodoList.ToListAsync());
+            return Ok(true);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<TodoModel>>> Delete(int id)
+        public async Task<ActionResult<bool>> Delete(int id)
         {
             var dbtodo = await _context.TodoList.FindAsync(id);
             if (dbtodo == null)
@@ -68,7 +77,7 @@ namespace Todo.API.Controllers
             _context.TodoList.Remove(dbtodo);
             await _context.SaveChangesAsync();
 
-            return Ok(await _context.TodoList.ToListAsync());
+            return Ok(true);
         }
     }
 }

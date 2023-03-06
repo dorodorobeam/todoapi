@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Todo.Application.CQRS.User.Models;
+using Todo.Domain.Entities;
 using Todo.Persistence.Context;
 
 namespace Todo.API.Controllers
@@ -10,21 +12,18 @@ namespace Todo.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly DatabaseContext _context;
+        private readonly IMapper _mapper;
 
-        public UserController(DatabaseContext context)
+        public UserController(DatabaseContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<UserModel>>> Get()
         {
-            return Ok(await _context.Users.Select(x => new UserModel
-            {
-                Id = x.Id,
-                Fullname = x.Fullname,
-                Name = x.Name,
-            }).ToListAsync());
+            return Ok(await _context.Users.Select(x => _mapper.Map<UserModel>(x)).ToListAsync());
         }
 
         [HttpGet("{id}")]
@@ -33,36 +32,19 @@ namespace Todo.API.Controllers
             var user = await _context.Users.FindAsync(id);
             if (user == null)
                 return BadRequest("User not found.");
-            return Ok(new UserModel
-            {
-                Id = user.Id,
-                Fullname = user.Fullname,
-                Name = user.Name,
-            });
+            return Ok(_mapper.Map<UserModel>(user));
         }
 
         [HttpPost]
-        public async Task<ActionResult<List<UserModel>>> Adduser(UserModel user)
+        public async Task<ActionResult<bool>> Adduser(UserModel user)
         {
-            _context.Users.Add(new Domain.Entities.User
-            {
-                Firstname = user.Firstname,
-                Lastname = user.Lastname,
-                Middlename = user.Middlename,
-                Prefix = user.Prefix,
-                Suffix = user.Suffix,
-                Specialization = user.Specialization,
-                Gender = user.Gender,
-                CivilStatus = user.CivilStatus,
-                Birthday = user.Birthday,
-            });
+            _context.Users.Add(_mapper.Map<User>(user));
             await _context.SaveChangesAsync();
-
-            return Ok(await _context.Users.ToListAsync());
+            return Ok(true);
         }
 
         [HttpPut]
-        public async Task<ActionResult<List<UserModel>>> Updateuser(UserModel request)
+        public async Task<ActionResult<bool>> Updateuser(UserModel request)
         {
             var dbuser = await _context.Users.FindAsync(request.Id);
             if (dbuser == null)
@@ -79,11 +61,11 @@ namespace Todo.API.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(await _context.Users.ToListAsync());
+            return Ok(true);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<UserModel>>> Delete(int id)
+        public async Task<ActionResult<bool>> Delete(int id)
         {
             var dbuser = await _context.Users.FindAsync(id);
             if (dbuser == null)
@@ -92,7 +74,7 @@ namespace Todo.API.Controllers
             _context.Users.Remove(dbuser);
             await _context.SaveChangesAsync();
 
-            return Ok(await _context.Users.ToListAsync());
+            return Ok(true);
         }
     }
 }
