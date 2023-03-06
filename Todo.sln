@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Persistence", "Todo.Pe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Domain", "Todo.Domain\Todo.Domain.csproj", "{883EE871-6DFC-4CD7-BCE5-83EB7F639CBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Application", "Todo.Application\Todo.Application.csproj", "{4ED11A0F-AF34-43FB-9D4C-AD576DE19AE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{883EE871-6DFC-4CD7-BCE5-83EB7F639CBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{883EE871-6DFC-4CD7-BCE5-83EB7F639CBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{883EE871-6DFC-4CD7-BCE5-83EB7F639CBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4ED11A0F-AF34-43FB-9D4C-AD576DE19AE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ED11A0F-AF34-43FB-9D4C-AD576DE19AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ED11A0F-AF34-43FB-9D4C-AD576DE19AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ED11A0F-AF34-43FB-9D4C-AD576DE19AE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

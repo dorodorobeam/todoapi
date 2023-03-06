@@ -9,5 +9,6 @@ namespace Todo.Domain.Entities
         public TodoStatusType Status { get; set; }
         public DateTime? Deadline { get; set; }
         public DateTime? DateCompleted { get; set; }
+        public User User { get; set; }
     }
 }
