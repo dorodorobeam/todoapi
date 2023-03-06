@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Todo.Application.CQRS.User.Models;
@@ -13,11 +14,15 @@ namespace Todo.API.Controllers
     {
         private readonly DatabaseContext _context;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> usermanager;
+        private readonly SignInManager<User> signinmanager;
 
-        public UserController(DatabaseContext context, IMapper mapper)
+        public UserController(DatabaseContext context, IMapper mapper, UserManager<User> usermanager, SignInManager<User> signinmanager)
         {
             _context = context;
             _mapper = mapper;
+            this.usermanager = usermanager;
+            this.signinmanager = signinmanager;
         }
 
         [HttpGet]
@@ -33,14 +38,6 @@ namespace Todo.API.Controllers
             if (user == null)
                 return BadRequest("User not found.");
             return Ok(_mapper.Map<UserModel>(user));
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<bool>> Adduser(UserModel user)
-        {
-            _context.Users.Add(_mapper.Map<User>(user));
-            await _context.SaveChangesAsync();
-            return Ok(true);
         }
 
         [HttpPut]

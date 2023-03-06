@@ -1,8 +1,9 @@
-﻿using Todo.Domain.Enums;
+﻿using Microsoft.AspNetCore.Identity;
+using Todo.Domain.Enums;
 
 namespace Todo.Domain.Entities
 {
-    public class User : BaseEntity<int>
+    public class User : IdentityUser
     {
         private string _prefix;
         private string _firstname;

@@ -21,7 +21,7 @@ namespace Todo.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<TodoModel>>> GetUserTodo(int id)
+        public async Task<ActionResult<List<TodoModel>>> GetUserTodo(string id)
         {
             return Ok(await _context.TodoList
                                     .Include(x => x.User)

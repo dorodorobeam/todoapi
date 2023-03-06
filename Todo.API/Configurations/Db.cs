@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Todo.Domain.Entities;
 using Todo.Persistence.Context;
 
 namespace Todo.API.Configurations
@@ -10,6 +12,14 @@ namespace Todo.API.Configurations
             // DATABASE
             builder.Services.AddDbContext<DatabaseContext>(opts =>
                 opts.UseSqlServer(builder.Configuration.GetConnectionString("TodoDb")));
+
+            // IDENTITY
+            builder.Services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 8;
+            })
+               .AddEntityFrameworkStores<DatabaseContext>()
+               .AddDefaultTokenProviders();
         }
 
         internal static void ConfigureDB(WebApplication app)
