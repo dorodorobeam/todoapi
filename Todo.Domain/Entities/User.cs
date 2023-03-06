@@ -4,11 +4,17 @@ namespace Todo.Domain.Entities
 {
     public class User : BaseEntity<int>
     {
+        private string _prefix;
         private string _firstname;
         private string _lastname;
         private string _middlename;
+        private string _suffix;
 
-        public string? Prefix { get; set; }
+        public string? Prefix
+        {
+            get { return _prefix; }
+            set { _prefix = value; setNames(); }
+        }
         public string Firstname
         {
             get { return _firstname; }
@@ -24,7 +30,11 @@ namespace Todo.Domain.Entities
             get { return _lastname; }
             set { _lastname = value; setNames(); }
         }
-        public string? Suffix { get; set; }
+        public string? Suffix
+        {
+            get { return _suffix; }
+            set { _suffix = value; setNames(); }
+        }
         public string Fullname { get; set; }
         public string Name { get; set; }
         public DateTime? Birthday { get; set; }

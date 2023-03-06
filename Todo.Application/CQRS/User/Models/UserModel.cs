@@ -10,8 +10,8 @@ namespace Todo.Application.CQRS.User.Models
         public string? Middlename { get; set; }
         public string Lastname { get; set; }
         public string? Suffix { get; set; }
-        public string Fullname { get; set; }
-        public string Name { get; set; }
+        public string? Fullname { get; set; }
+        public string? Name { get; set; }
         public DateTime? Birthday { get; set; }
         public GenderType? Gender { get; set; }
         public CivilStatusType CivilStatus { get; set; }
